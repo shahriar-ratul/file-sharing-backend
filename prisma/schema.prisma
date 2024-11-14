@@ -64,6 +64,7 @@ model File {
   viewCount Int      @default(0)
   lastViewAt DateTime?
   
+  displayOrder Int? @default(0)
 
   ShareLink ShareLink[] @relation(name: "file_share_link")
 

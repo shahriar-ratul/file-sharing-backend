@@ -22,10 +22,14 @@ export class UsersService {
 
         const order = query.order || 'asc';
 
+        const isActive = query.isActive === 'true' ? true : query.isActive === 'false' ? false : undefined;
+
         const queryData: Prisma.UserFindManyArgs = {
             where: {
                 OR: [{ email: { contains: search } }, { username: { contains: search } }],
+                ...(isActive !== undefined && { isActive: isActive }),
             },
+
             include: {
                 files: true,
             },

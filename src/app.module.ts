@@ -16,6 +16,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { UsersModule } from './modules/users/users.module';
+import { FilesModule } from './modules/files/files.module';
 @Module({
     imports: [
         PrismaModule,
@@ -39,6 +40,7 @@ import { UsersModule } from './modules/users/users.module';
         ]),
         AuthModule,
         UsersModule,
+        FilesModule,
     ],
     controllers: [AppController],
     providers: [
