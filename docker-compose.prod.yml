@@ -5,7 +5,7 @@ services:
     image: nest-api
     restart: always
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
       context: .
     ports:
       - "4000:4000"
