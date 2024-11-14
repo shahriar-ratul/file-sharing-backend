@@ -1,0 +1,52 @@
+FROM node:20-slim AS builder
+
+WORKDIR /app
+
+# Install system dependencies including OpenSSL
+RUN apt-get update && apt-get install -y \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pnpm and NestJS CLI globally
+RUN npm install -g pnpm
+RUN npm install -g @nestjs/cli
+
+# Copy package files and prisma schema
+COPY package.json pnpm-lock.yaml ./
+COPY prisma ./prisma/
+
+# Install dependencies
+RUN pnpm install
+
+# Generate Prisma Client
+RUN pnpm prisma generate
+
+# Copy the rest of the application
+COPY . .
+
+# Build the application
+RUN pnpm build
+
+# Production stage
+FROM node:20-slim
+
+WORKDIR /app
+
+# Install system dependencies including OpenSSL
+RUN apt-get update && apt-get install -y \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pnpm globally
+RUN npm install -g pnpm
+
+# Copy only necessary files from builder
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/prisma ./prisma
+
+EXPOSE 4000
+
+# Run in production mode
+CMD ["pnpm", "start:prod"] 

@@ -12,3 +12,85 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+model User {
+  id        String   @id @default(cuid())
+  username  String?  @unique
+  email     String   @unique
+  password  String
+  firstName String?
+  lastName  String?
+  avatar    String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  files File[] @relation(name: "user_file")
+
+  tokens Token[] @relation(name: "user_token")
+}
+
+model Token {
+  id           Int       @id @default(autoincrement())
+  user         User      @relation(name: "user_token", fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  token        String
+  refreshToken String?
+  ip           String?
+  userAgent    String?
+  expiresAt    DateTime?
+  isRevoked    Boolean   @default(false)
+  revokedAt    DateTime?
+  revokedBy    Int?
+  revokedByIp  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+
+
+model File {
+  id        String   @id @default(cuid())
+  url       String
+  size      Int
+  type      String  
+  user      User     @relation(name: "user_file", fields: [userId], references: [id])
+  shareLink String?
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  viewCount Int      @default(0)
+  lastViewAt DateTime?
+  
+
+  ShareLink ShareLink[] @relation(name: "file_share_link")
+
+  Statistic Statistic[] @relation(name: "file_statistic")
+}
+
+model ShareLink {
+  id        String   @id @default(cuid())
+  file      File     @relation(name: "file_share_link", fields: [fileId], references: [id])
+  fileId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  openCount Int      @default(0)
+}
+
+model Statistic {
+  id        String   @id @default(cuid())
+  file      File     @relation(name: "file_statistic", fields: [fileId], references: [id])
+  fileId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ipAddress String?
+  userAgent String?
+  viewedAt  DateTime @default(now())
+
+}
+
+
