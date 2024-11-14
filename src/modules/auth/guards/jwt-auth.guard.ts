@@ -9,15 +9,16 @@ import { JwtService } from '@nestjs/jwt';
 import 'dotenv/config';
 import { TokenService } from '@/modules/users/token/token.service';
 
+import { PrismaService } from '@/modules/prisma/prisma.service';
 import { Request } from 'express';
 
 @Injectable()
 // eslint-disable-next-line @darraghor/nestjs-typed/injectable-should-be-provided
 export class JwtAuthGuard extends AuthGuard('jwt') {
     constructor(
-        private TokenService: TokenService,
         private jwtService: JwtService,
-        private reflector: Reflector
+        private reflector: Reflector,
+        private _prisma: PrismaService
     ) {
         super();
     }
@@ -54,7 +55,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
         if (token) {
             // check token is exist in database or not
-            const isRevoked = await this.TokenService.isRevokedToken(token);
+            const isRevoked = await this._prisma.token.findFirst({ where: { token: token } });
 
             if (isRevoked) {
                 throw new UnauthorizedException();

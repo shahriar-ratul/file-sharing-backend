@@ -61,7 +61,7 @@ export class UsersService {
         return new PageDto(transformedResult, pageMetaDto);
     }
 
-    // add admin
+    // add
     async create(createUserDto: CreateUserDto, file: Express.Multer.File) {
         const checkUser = await this._prisma.user.findFirst({
             where: {

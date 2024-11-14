@@ -4,7 +4,6 @@ import { MulterModule } from '@nestjs/platform-express';
 
 import { join } from 'node:path';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE, Reflector } from '@nestjs/core';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -14,9 +13,9 @@ import { LoggerMiddleware } from './core/middleware/logger.middleware';
 import { RequestLoggerMiddleware } from './core/middleware/request-logger.middleware';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+import { FilesModule } from './modules/files/files.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { UsersModule } from './modules/users/users.module';
-import { FilesModule } from './modules/files/files.module';
 @Module({
     imports: [
         PrismaModule,
@@ -26,11 +25,6 @@ import { FilesModule } from './modules/files/files.module';
         }),
         MulterModule.register({
             dest: './public',
-        }),
-        ServeStaticModule.forRoot({
-            rootPath: join(__dirname, '..', 'public'),
-            exclude: ['/api/(.*)', '/docs'],
-            serveRoot: '/public',
         }),
         ThrottlerModule.forRoot([
             {

@@ -1,23 +1,30 @@
 version: '3.8'
 
 services:
-  # nest-backend:
-  #   image: nest-api
-  #   restart: always
-  #   build:
-  #     dockerfile: Dockerfile
-  #     context: .
-  #   ports:
-  #     - "4000:4000"
-  #   environment:
-  #     - NODE_ENV=development
-  #     - DATABASE_URL=postgresql://postgres:postgrespassword@localhost:5435/postgres?schema=public
-  #   volumes:
-  #     - .:/usr/src/app
-  #     - /usr/src/app/node_modules
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
+  nest-backend:
+    image: nest-api
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgrespassword@localhost:5435/postgres?schema=public
+      - NODE_OPTIONS="--max-old-space-size=4096"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    command: >
+      sh -c "node -e \"process.env.NODE_OPTIONS='--max-old-space-size=4096'\" && npm run start:dev"
 
   postgres:
     image: postgres:17-alpine

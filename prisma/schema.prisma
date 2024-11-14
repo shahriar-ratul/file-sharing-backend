@@ -52,15 +52,18 @@ model Token {
 
 model File {
   id        String   @id @default(cuid())
+  title     String?
   url       String
   size      Int
   type      String  
   user      User     @relation(name: "user_file", fields: [userId], references: [id])
   shareLink String?
   userId    String
+  thumbnailPath String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
+  fileType  String
   viewCount Int      @default(0)
   lastViewAt DateTime?
   
@@ -69,6 +72,28 @@ model File {
   ShareLink ShareLink[] @relation(name: "file_share_link")
 
   Statistic Statistic[] @relation(name: "file_statistic")
+
+  FileTag FileTag[] @relation(name: "file_tag")
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  FileTag FileTag[] @relation(name: "tag_file")
+}
+
+model FileTag {
+  id        String   @id @default(cuid())
+  file      File     @relation(name: "file_tag", fields: [fileId], references: [id])
+  fileId    String
+  tag       Tag      @relation(name: "tag_file", fields: [tagId], references: [id])
+  tagId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ShareLink {

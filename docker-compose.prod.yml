@@ -12,9 +12,18 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5435/postgres?schema=public
+      - MAX_FILE_SIZE=2048mb
     depends_on:
       postgres:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 
   postgres:
     image: postgres:17-alpine

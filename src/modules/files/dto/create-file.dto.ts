@@ -1,13 +1,27 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsArray, IsString } from 'class-validator';
 
 export class CreateFileDto {
-    @ApiProperty({ type: 'string', format: 'binary' })
-    file: Express.Multer.File;
-
-    @ApiProperty({ type: [String], required: false })
     @IsArray()
-    @IsString({ each: true })
-    @IsOptional()
-    tags?: string[];
+    @Transform(({ value }) => {
+        // Handle string JSON input
+        if (typeof value === 'string') {
+            try {
+                return JSON.parse(value);
+            } catch {
+                return value;
+            }
+        }
+        return value;
+    })
+    tags: string[];
+
+    @IsString()
+    fileType: string;
+
+    @IsString()
+    userId: string;
+
+    @IsString()
+    title: string;
 }

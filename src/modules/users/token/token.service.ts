@@ -59,16 +59,25 @@ export class TokenService {
 
     // isRevokedToken
     async isRevokedToken(token: string) {
+        console.log('token', token);
+
         const tokenData = await this._prisma.token.findFirst({
             where: {
                 token: token,
             },
         });
 
+        console.log('tokenData', tokenData);
+
         if (!tokenData) {
             return false;
         }
 
+        if (tokenData == null) {
+            return false;
+        }
+
+        console.log('tokenData.isRevoked', tokenData.isRevoked);
         if (tokenData.isRevoked) {
             return true;
         }

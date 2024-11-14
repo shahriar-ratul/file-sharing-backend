@@ -7,7 +7,7 @@ import {
     Post,
     Put,
     Query,
-    SetMetadata,
+
     UploadedFile,
     UseGuards,
     UseInterceptors,
@@ -57,7 +57,6 @@ export class UsersController {
 
     @Get()
     @ApiResponse({})
-    @SetMetadata('permissions', ['admin.view'])
     async findAll(@Query() pageOptionsDto: PageOptionsDto): Promise<PageDto<Omit<User, 'password'>>> {
         return await this._usersService.findAll(pageOptionsDto);
     }
@@ -67,7 +66,6 @@ export class UsersController {
         status: 201,
         description: 'The record has been successfully created.',
     })
-    @SetMetadata('permissions', ['admin.create'])
     @UseInterceptors(FileInterceptor('image', storageAdmin))
     async create(
         @UploadedFile()
@@ -83,14 +81,12 @@ export class UsersController {
 
     @Get(':id')
     @ApiResponse({})
-    @SetMetadata('permissions', ['admin.view'])
     async findOne(@Param('id') id: string) {
         return this._usersService.findById(id);
     }
 
     @Put(':id')
     @ApiResponse({})
-    @SetMetadata('permissions', ['admin.update'])
     @UseInterceptors(FileInterceptor('image', storageAdmin))
     async update(
         @Param('id') id: string,
@@ -103,14 +99,12 @@ export class UsersController {
 
     @Delete(':id')
     @ApiResponse({})
-    @SetMetadata('permissions', ['admin.delete'])
     async remove(@Param('id') id: string) {
         return this._usersService.remove(id);
     }
 
     @Post(':id/status')
     @ApiResponse({})
-    @SetMetadata('permissions', ['admin.status'])
     async changeStatus(@Param('id') id: string) {
         return this._usersService.changeStatus(id);
     }

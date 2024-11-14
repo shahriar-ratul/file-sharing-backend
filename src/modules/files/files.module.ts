@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { FilesService } from './files.service';
+import { JwtModule } from '@nestjs/jwt';
+import { PrismaModule } from '../prisma/prisma.module';
 import { FilesController } from './files.controller';
+import { FilesService } from './files.service';
 
 @Module({
-  controllers: [FilesController],
-  providers: [FilesService],
+    imports: [JwtModule],
+    controllers: [FilesController],
+    providers: [FilesService],
 })
 export class FilesModule {}
