@@ -10,7 +10,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main",
     "check": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true",
     "format": "biome format --write",
     "lint": "biome lint",
